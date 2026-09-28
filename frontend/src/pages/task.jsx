@@ -1,39 +1,78 @@
+import { API_URL as BASE_API_URL } from '../api/config'
+import AppNav from '../components/AppNav'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/axios'
 import { useUser } from '../context/UserContext'
 
 function Tasks() {
   const navigate = useNavigate()
-  const { logout, user } = useUser()
+  const { user, logout } = useUser()
 
   const [tasks, setTasks] = useState([])
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const [showForm, setShowForm] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
+
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    status: 'Pendiente'
+  })
+
+  // ==========================================
+  // URL DEL BACKEND
+  // ==========================================
+
+  const API_URL = `${BASE_API_URL}/task`
+
+  // ==========================================
+  // HEADERS
+  // ==========================================
+
+  const getHeaders = () => {
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+
+    if (user?.token) {
+      headers.Authorization = `Bearer ${user.token}`
+    }
+
+    return headers
+  }
+
+  // ==========================================
+  // OBTENER TAREAS
+  // ==========================================
 
   const loadTasks = async () => {
     try {
       setLoading(true)
       setError('')
 
-      const response = await api.get('/api/task', {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+      const response = await fetch(API_URL, {
+        method: 'GET',
+        headers: getHeaders()
       })
 
-      setTasks(response.data)
-    } catch (error) {
-      console.error('ERROR TASKS:', error)
-
-      if (error.response?.data?.message) {
-        setError(error.response.data.message)
-      } else {
-        setError('No se pudieron cargar las tareas')
+      if (!response.ok) {
+        throw new Error('No se pudieron cargar las tareas.')
       }
+
+      const data = await response.json()
+
+      if (Array.isArray(data)) {
+        setTasks(data)
+      } else if (Array.isArray(data.tasks)) {
+        setTasks(data.tasks)
+      } else {
+        setTasks([])
+      }
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
     } finally {
       setLoading(false)
     }
@@ -42,321 +81,458 @@ function Tasks() {
   useEffect(() => {
     if (user?.token) {
       loadTasks()
+    } else {
+      setLoading(false)
     }
   }, [user])
+
+  // ==========================================
+  // CAMBIAR CAMPOS DEL FORMULARIO
+  // ==========================================
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+
+    setForm((previous) => ({
+      ...previous,
+      [name]: value
+    }))
+  }
+
+  // ==========================================
+  // ABRIR FORMULARIO PARA CREAR
+  // ==========================================
+
+  const openCreateForm = () => {
+    setEditingTask(null)
+
+    setForm({
+      title: '',
+      description: '',
+      status: 'Pendiente'
+    })
+
+    setError('')
+    setShowForm(true)
+  }
+
+  // ==========================================
+  // ABRIR FORMULARIO PARA EDITAR
+  // ==========================================
+
+  const openEditForm = (task) => {
+    setEditingTask(task)
+
+    setForm({
+      title: task.title || '',
+      description: task.description || '',
+      status: task.status || 'Pendiente'
+    })
+
+    setError('')
+    setShowForm(true)
+  }
+
+  // ==========================================
+  // CERRAR FORMULARIO
+  // ==========================================
+
+  const closeForm = () => {
+    setShowForm(false)
+    setEditingTask(null)
+
+    setForm({
+      title: '',
+      description: '',
+      status: 'Pendiente'
+    })
+  }
+
+  // ==========================================
+  // CREAR / ACTUALIZAR
+  // ==========================================
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!title.trim()) {
-      setError('El título es obligatorio')
+    if (!form.title.trim()) {
+      setError('El título de la tarea es obligatorio.')
       return
     }
 
     try {
       setError('')
 
-      if (editingTask) {
-        const response = await api.put(
-          `/api/task/${editingTask._id}`,
-          {
-            title,
-            description,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        )
+      const url = editingTask
+        ? `${API_URL}/${editingTask._id}`
+        : API_URL
 
-        setTasks((currentTasks) =>
-          currentTasks.map((task) =>
-            task._id === editingTask._id
-              ? response.data
-              : task
+      const method = editingTask ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method,
+        headers: getHeaders(),
+        body: JSON.stringify({
+          title: form.title.trim(),
+          description: form.description.trim(),
+          status: form.status
+        })
+      })
+
+      const data = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        throw new Error(
+          data?.message ||
+          (
+            editingTask
+              ? 'No se pudo actualizar la tarea.'
+              : 'No se pudo crear la tarea.'
           )
         )
-
-        setEditingTask(null)
-      } else {
-        const response = await api.post(
-          '/api/task',
-          {
-            title,
-            description,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        )
-
-        setTasks((currentTasks) => [
-          ...currentTasks,
-          response.data,
-        ])
       }
 
-      setTitle('')
-      setDescription('')
-    } catch (error) {
-      console.error('ERROR TASK:', error)
-
-      if (error.response?.data?.message) {
-        setError(error.response.data.message)
-      } else {
-        setError('No se pudo guardar la tarea')
-      }
+      closeForm()
+      await loadTasks()
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
     }
   }
 
-  const handleEdit = (task) => {
-    setEditingTask(task)
-    setTitle(task.title)
-    setDescription(task.description || '')
-    setError('')
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
-  }
-
-  const handleCancelEdit = () => {
-    setEditingTask(null)
-    setTitle('')
-    setDescription('')
-    setError('')
-  }
+  // ==========================================
+  // ELIMINAR
+  // ==========================================
 
   const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      '¿Seguro que quieres eliminar esta tarea?'
+    )
+
+    if (!confirmDelete) {
+      return
+    }
+
     try {
       setError('')
 
-      await api.delete(`/api/task/${id}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
       })
 
-      setTasks((currentTasks) =>
-        currentTasks.filter((task) => task._id !== id)
-      )
-    } catch (error) {
-      console.error('ERROR DELETE TASK:', error)
+      const data = await response.json().catch(() => null)
 
-      if (error.response?.data?.message) {
-        setError(error.response.data.message)
-      } else {
-        setError('No se pudo eliminar la tarea')
+      if (!response.ok) {
+        throw new Error(
+          data?.message || 'No se pudo eliminar la tarea.'
+        )
       }
+
+      await loadTasks()
+    } catch (err) {
+      console.error(err)
+      setError(err.message)
     }
   }
 
+  // ==========================================
+  // CERRAR SESIÓN
+  // ==========================================
+
   const handleLogout = () => {
     logout()
-    navigate('/')
+    navigate('/login')
   }
 
+  // ==========================================
+  // RENDER
+  // ==========================================
+
   return (
-    <div className="task-page">
+    <div className="tasks-page">
 
-      <nav className="navbar">
+      {/* NAVBAR */}
 
-        <div className="logo">
-          <span>Bowling</span>Pro
-        </div>
+      <AppNav />
 
-        <div className="nav-links">
+      {/* CONTENIDO */}
+
+      <main className="tasks-container">
+
+        <header className="tasks-header">
+
+          <p className="tag">
+            BOWLINGPRO
+          </p>
+
+          <h1>
+            Mis tareas.
+          </h1>
+
+          <p>
+            Organiza y administra tus actividades de entrenamiento.
+          </p>
+
+        </header>
+
+        {/* BARRA DE ACCIONES */}
+
+        <div className="tasks-toolbar">
 
           <button
             type="button"
-            className="nav-button"
-            onClick={() => navigate('/')}
+            className="main-button"
+            onClick={openCreateForm}
           >
-            Inicio
-          </button>
-
-          <button
-            type="button"
-            className="nav-button"
-            onClick={handleLogout}
-          >
-            Cerrar sesión
+            + Nueva tarea
           </button>
 
         </div>
 
-      </nav>
+        {/* ERROR */}
 
-      <main className="task-container">
-
-        <div className="task-header">
-
-          <div>
-
-            <p className="tag">
-              BOWLINGPRO
-            </p>
-
-            <h1>
-              Mis tareas
-            </h1>
-
-            <p>
-              Gestiona tus actividades de entrenamiento.
-            </p>
-
+        {error && (
+          <div className="task-error">
+            {error}
           </div>
+        )}
 
-        </div>
+        {/* FORMULARIO */}
 
-        <section className="task-form-card">
+        {showForm && (
+          <section className="task-form-card">
 
-          <h2>
-            {editingTask ? 'Editar tarea' : 'Nueva tarea'}
-          </h2>
+            <div className="task-form-header">
 
-          <form onSubmit={handleSubmit}>
+              <div>
+                <p className="tag">
+                  {editingTask ? 'EDITAR' : 'NUEVA TAREA'}
+                </p>
 
-            <label>
-              Título
-            </label>
-
-            <input
-              type="text"
-              value={title}
-              onChange={(e) =>
-                setTitle(e.target.value)
-              }
-              placeholder="Ej. Practicar lanzamiento recto"
-            />
-
-            <label>
-              Descripción
-            </label>
-
-            <textarea
-              value={description}
-              onChange={(e) =>
-                setDescription(e.target.value)
-              }
-              placeholder="Describe la actividad"
-              rows="4"
-            />
-
-            <div className="task-form-buttons">
+                <h2>
+                  {editingTask
+                    ? 'Actualizar tarea'
+                    : 'Crear nueva tarea'}
+                </h2>
+              </div>
 
               <button
-                type="submit"
-                className="main-button"
+                type="button"
+                className="close-form-button"
+                onClick={closeForm}
               >
-                {editingTask
-                  ? 'Actualizar tarea'
-                  : 'Crear tarea'}
+                ×
               </button>
 
-              {editingTask && (
+            </div>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="task-form-group">
+
+                <label htmlFor="title">
+                  Título
+                </label>
+
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  placeholder="Ej. Practicar precisión"
+                  value={form.title}
+                  onChange={handleChange}
+                />
+
+              </div>
+
+              <div className="task-form-group">
+
+                <label htmlFor="description">
+                  Descripción
+                </label>
+
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="Describe la actividad..."
+                  value={form.description}
+                  onChange={handleChange}
+                  rows="4"
+                />
+
+              </div>
+
+              <div className="task-form-group">
+
+                <label htmlFor="status">
+                  Estado
+                </label>
+
+                <select
+                  id="status"
+                  name="status"
+                  value={form.status}
+                  onChange={handleChange}
+                >
+                  <option value="Pendiente">
+                    Pendiente
+                  </option>
+
+                  <option value="En progreso">
+                    En progreso
+                  </option>
+
+                  <option value="Completada">
+                    Completada
+                  </option>
+                </select>
+
+              </div>
+
+              <div className="task-form-actions">
+
                 <button
                   type="button"
                   className="secondary-button"
-                  onClick={handleCancelEdit}
+                  onClick={closeForm}
                 >
                   Cancelar
                 </button>
-              )}
 
-            </div>
+                <button
+                  type="submit"
+                  className="main-button"
+                >
+                  {editingTask
+                    ? 'Guardar cambios'
+                    : 'Crear tarea'}
+                </button>
 
-          </form>
+              </div>
 
-        </section>
+            </form>
 
-        {error && (
-          <p className="login-error">
-            {error}
-          </p>
+          </section>
         )}
 
-        <section className="task-list">
+        {/* LISTA DE TAREAS */}
 
-          <div className="task-list-header">
-
-            <h2>
-              Mis actividades
-            </h2>
-
-            <span>
-              {tasks.length} tarea{tasks.length !== 1 ? 's' : ''}
-            </span>
-
-          </div>
+        <section className="tasks-list">
 
           {loading ? (
-            <p>
-              Cargando tareas...
-            </p>
-          ) : tasks.length === 0 ? (
-            <div className="empty-task">
 
-              <h3>
-                Aún no tienes tareas
-              </h3>
+            <div className="empty-tasks">
+              <p className="loading-message">
+                Cargando tareas...
+              </p>
+            </div>
+
+          ) : tasks.length === 0 ? (
+
+            <div className="empty-tasks">
+
+              <div className="empty-icon">
+                ✓
+              </div>
+
+              <h2>
+                No tienes tareas todavía.
+              </h2>
 
               <p>
-                Crea tu primera actividad de entrenamiento.
+                Crea tu primera tarea para organizar
+                tu entrenamiento.
               </p>
 
+              <button
+                type="button"
+                className="main-button"
+                onClick={openCreateForm}
+              >
+                Crear mi primera tarea
+              </button>
+
             </div>
+
           ) : (
-            <div className="cards">
 
-              {tasks.map((task) => (
+            <>
 
-                <article
-                  className="card task-card"
-                  key={task._id}
-                >
+              <div className="tasks-count">
 
-                  <div className="task-card-content">
+                <span>
+                  Tus tareas
+                </span>
 
-                    <h3>
-                      {task.title}
-                    </h3>
+                <strong>
+                  {tasks.length}
+                </strong>
 
-                    <p>
-                      {task.description || 'Sin descripción'}
-                    </p>
+              </div>
 
-                  </div>
+              <div className="task-grid">
 
-                  <div className="task-actions">
+                {tasks.map((task) => (
 
-                    <button
-                      type="button"
-                      className="edit-button"
-                      onClick={() => handleEdit(task)}
-                    >
-                      Editar
-                    </button>
+                  <article
+                    className="task-card"
+                    key={task._id}
+                  >
 
-                    <button
-                      type="button"
-                      className="delete-button"
-                      onClick={() => handleDelete(task._id)}
-                    >
-                      Eliminar
-                    </button>
+                    <div className="task-card-content">
 
-                  </div>
+                      <span
+                        className={`task-status ${
+                          task.status === 'Completada'
+                            ? 'completed'
+                            : task.status === 'En progreso'
+                              ? 'progress'
+                              : ''
+                        }`}
+                      >
+                        {task.status || 'Pendiente'}
+                      </span>
 
-                </article>
+                      <h2>
+                        {task.title}
+                      </h2>
 
-              ))}
+                      <p>
+                        {task.description ||
+                          'Sin descripción.'}
+                      </p>
 
-            </div>
+                    </div>
+
+                    <div className="task-card-actions">
+
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => openEditForm(task)}
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        type="button"
+                        className="delete-button"
+                        onClick={() => handleDelete(task._id)}
+                      >
+                        Eliminar
+                      </button>
+
+                    </div>
+
+                  </article>
+
+                ))}
+
+              </div>
+
+            </>
+
           )}
 
         </section>

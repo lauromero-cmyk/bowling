@@ -1,0 +1,66 @@
+# Integración continua de BowlingPro
+# Cada push o Pull Request ejecuta las pruebas automáticas y compila la app.
+name: CI BowlingPro
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruebas-backend:
+    name: Pruebas y cobertura (backend)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Ejecutar 31 pruebas con cobertura
+        run: npm run test:coverage | tee resultado-pruebas.txt
+
+      - name: Publicar resumen en GitHub
+        if: always()
+        run: |
+          echo "## Resultado de las pruebas" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          grep -E "^ℹ (tests|pass|fail)" resultado-pruebas.txt >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "## Cobertura de código" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          sed -n '/start of coverage report/,/end of coverage report/p' resultado-pruebas.txt >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Guardar reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-cobertura
+          path: |
+            lcov.info
+            resultado-pruebas.txt
+
+  build-frontend:
+    name: Compilar app (frontend)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Compilar
+        run: npm run build

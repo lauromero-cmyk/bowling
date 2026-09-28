@@ -1,0 +1,93 @@
+
+> bowlingpro@1.0.0 test
+> node --test "tests/*.test.js"
+
+TAP version 13
+# >>> Lecciones base cargadas
+# Subtest: CP-14 Registro de jugador devuelve token y rol jugador
+ok 1 - CP-14 Registro de jugador devuelve token y rol jugador
+#     at InsertOneOperation.handleOk (/home/claude/bp/node_modules/mongodb/lib/operations/insert.js:55:19)
+#     at executeOperationWithRetries (/home/claude/bp/node_modules/mongodb/lib/operations/execute_operation.js:218:34)
+#     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+#     at async executeOperation (/home/claude/bp/node_modules/mongodb/lib/operations/execute_operation.js:85:16)
+#     at async Collection.insertOne (/home/claude/bp/node_modules/mongodb/lib/collection.js:154:16)
+#     at async model.$__save (/home/claude/bp/node_modules/mongoose/lib/model.js:435:16)
+#     at async maybeTracedSave (/home/claude/bp/node_modules/mongoose/lib/model.js:676:7)
+#     at async register (file:///home/claude/bp/src/controllers/auth.controller.js:26:27) {
+#   errorLabelSet: Set(0) {},
+#   errorResponse: {
+#     index: 0,
+#     code: 11000,
+#   },
+#   index: 0,
+#   code: 11000
+# }
+# Subtest: CP-15 No se puede registrar el mismo correo dos veces
+ok 2 - CP-15 No se puede registrar el mismo correo dos veces
+# Subtest: CP-16 Registro rechaza contraseña corta y correo inválido
+ok 3 - CP-16 Registro rechaza contraseña corta y correo inválido
+# Subtest: CP-17 No se puede auto-registrar como administrador
+ok 4 - CP-17 No se puede auto-registrar como administrador
+# Subtest: CP-18 Login con credenciales correctas e incorrectas
+ok 5 - CP-18 Login con credenciales correctas e incorrectas
+# Subtest: CP-19 Rutas protegidas exigen token
+ok 6 - CP-19 Rutas protegidas exigen token
+# Subtest: CP-20 Registrar partida calcula el puntaje en el servidor
+ok 7 - CP-20 Registrar partida calcula el puntaje en el servidor
+# Subtest: CP-21 Partida inválida es rechazada con mensaje claro
+ok 8 - CP-21 Partida inválida es rechazada con mensaje claro
+# Subtest: CP-22 Estadísticas e historial del jugador
+ok 9 - CP-22 Estadísticas e historial del jugador
+# Subtest: CP-23 Retos se validan contra el historial
+ok 10 - CP-23 Retos se validan contra el historial
+# Subtest: CP-24 Lecciones avanzadas bloqueadas para principiante
+ok 11 - CP-24 Lecciones avanzadas bloqueadas para principiante
+# Subtest: CP-25 Evaluación reprobada no avanza de nivel
+ok 12 - CP-25 Evaluación reprobada no avanza de nivel
+# Subtest: CP-26 Aprobar todas las lecciones del nivel sube al jugador de nivel
+ok 13 - CP-26 Aprobar todas las lecciones del nivel sube al jugador de nivel
+# Subtest: CP-27 Solo el administrador puede crear lecciones
+ok 14 - CP-27 Solo el administrador puede crear lecciones
+# Subtest: CP-28 El entrenador solo ve y comenta jugadores de su grupo
+ok 15 - CP-28 El entrenador solo ve y comenta jugadores de su grupo
+# Subtest: CP-29 El jugador recibe notificación de retroalimentación
+ok 16 - CP-29 El jugador recibe notificación de retroalimentación
+# Subtest: CP-30 Tabla de clasificación por grupo
+ok 17 - CP-30 Tabla de clasificación por grupo
+# Subtest: CP-31 Entrenamiento: iniciar, registrar intentos y finalizar
+ok 18 - CP-31 Entrenamiento: iniciar, registrar intentos y finalizar
+# Subtest: CP-01 Juego perfecto: 12 strikes = 300
+ok 19 - CP-01 Juego perfecto: 12 strikes = 300
+# Subtest: CP-02 Todos a la canal (gutter game) = 0
+ok 20 - CP-02 Todos a la canal (gutter game) = 0
+# Subtest: CP-03 Todos 1 pin por lanzamiento = 20
+ok 21 - CP-03 Todos 1 pin por lanzamiento = 20
+# Subtest: CP-04 Todos spares 5/5 con bono 5 = 150
+ok 22 - CP-04 Todos spares 5/5 con bono 5 = 150
+# Subtest: CP-05 Un spare suma 10 + el siguiente lanzamiento
+ok 23 - CP-05 Un spare suma 10 + el siguiente lanzamiento
+# Subtest: CP-06 Un strike suma 10 + los dos lanzamientos siguientes
+ok 24 - CP-06 Un strike suma 10 + los dos lanzamientos siguientes
+# Subtest: CP-07 Partida mixta conocida = 133
+ok 25 - CP-07 Partida mixta conocida = 133
+# Subtest: CP-08 Rechaza un frame que suma más de 10 pines
+ok 26 - CP-08 Rechaza un frame que suma más de 10 pines
+# Subtest: CP-09 Rechaza valores negativos o mayores a 10
+ok 27 - CP-09 Rechaza valores negativos o mayores a 10
+# Subtest: CP-10 Rechaza tercer lanzamiento en el décimo frame sin strike ni spare
+ok 28 - CP-10 Rechaza tercer lanzamiento en el décimo frame sin strike ni spare
+# Subtest: CP-11 Rechaza partida incompleta cuando se exige completa
+ok 29 - CP-11 Rechaza partida incompleta cuando se exige completa
+# Subtest: CP-12 Permite partida en curso y deja pendiente el strike sin bono
+ok 30 - CP-12 Permite partida en curso y deja pendiente el strike sin bono
+# Subtest: CP-13 Décimo frame: strike y bonos que suman más de 10 es inválido
+ok 31 - CP-13 Décimo frame: strike y bonos que suman más de 10 es inválido
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1700.229529

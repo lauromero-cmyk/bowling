@@ -1,21 +1,45 @@
-import { createContext, useContext, useState } from 'react'
+import {
+  createContext,
+  useContext,
+  useState
+} from 'react'
 
 const UserContext = createContext()
 
+const readStoredUser = () => {
+  const token = localStorage.getItem('token')
+
+  if (!token) {
+    return null
+  }
+
+  try {
+    const profile = JSON.parse(localStorage.getItem('bowlingpro_profile') || '{}')
+    return { token, profile }
+  } catch {
+    return { token, profile: {} }
+  }
+}
+
 export function UserProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const token = localStorage.getItem('token')
 
-    return token ? { token } : null
-  })
+  const [user, setUser] = useState(readStoredUser)
 
-  const login = (token) => {
+  // Recibe el token y los datos que devuelve el backend en /login o /register
+  const login = (token, profile) => {
     localStorage.setItem('token', token)
-    setUser({ token })
+    localStorage.setItem('bowlingpro_profile', JSON.stringify(profile))
+    setUser({ token, profile })
+  }
+
+  const updateProfile = (profile) => {
+    localStorage.setItem('bowlingpro_profile', JSON.stringify(profile))
+    setUser((currentUser) => ({ ...currentUser, profile }))
   }
 
   const logout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('bowlingpro_profile')
     setUser(null)
   }
 
@@ -25,6 +49,7 @@ export function UserProvider({ children }) {
         user,
         login,
         logout,
+        updateProfile
       }}
     >
       {children}

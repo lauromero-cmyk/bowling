@@ -1,0 +1,152 @@
+/* Estilos de los módulos nuevos (misma paleta de BowlingPro) */
+
+.app-nav { height: auto; min-height: 90px; flex-wrap: wrap; gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+.app-nav-links { flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.app-nav-links .nav-button { padding: 10px 16px; font-size: 14px; text-decoration: none; }
+.logout-link { background: transparent; color: #8a7f96; }
+
+.section-page { min-height: 100vh; background: #fff8fc; }
+.section-container { width: 88%; max-width: 1200px; margin: 0 auto; padding: 48px 0 90px; display: grid; gap: 26px; }
+.section-container.narrow { max-width: 860px; }
+.section-header h1 { font-family: 'Outfit', sans-serif; font-size: clamp(38px, 5vw, 64px); line-height: 1; margin: 0 0 14px; color: #30283f; font-weight: 800; }
+.section-header h1 span { color: #df5aaa; }
+.section-header p { color: #6b6278; font-size: 17px; max-width: 720px; }
+
+.card { background: white; border: 1px solid #f0ddec; border-radius: 26px; padding: 30px; box-shadow: 0 18px 45px rgba(74, 45, 75, 0.07); }
+.card h2 { font-family: 'Outfit', sans-serif; margin: 0 0 18px; color: #30283f; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.live-total { font-size: 18px; color: #6b6278; }
+.live-total strong { color: #df5aaa; font-size: 28px; font-family: 'Outfit', sans-serif; }
+.muted { color: #8a7f96; }
+.pill { display: inline-block; margin-left: 8px; padding: 4px 10px; border-radius: 999px; background: #fff0f7; color: #d052a2; font-size: 12px; font-weight: 700; }
+.form-error { color: #c0392b; font-weight: 600; }
+.form-success { color: #2e8b57; font-weight: 600; }
+.text-input { width: 100%; padding: 13px 15px; border-radius: 13px; border: 1px solid #e4d7e2; font-size: 15px; outline: none; background: white; }
+.text-input.small { width: auto; }
+.row-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.back-link { border: none; background: none; color: #d052a2; font-weight: 700; padding: 0; justify-self: start; }
+.clean-list { margin: 0; padding-left: 20px; line-height: 1.8; color: #4a4258; }
+.danger-link { border: none; background: none; color: #c0392b; font-weight: 700; margin-top: 12px; }
+.auth-switch { text-align: center; margin-top: 20px; color: #6b6278; }
+.auth-switch a { color: #d052a2; font-weight: 700; }
+.auth-select { padding: 15px; border-radius: 13px; border: 1px solid #e4d7e2; font-size: 15px; background: white; }
+
+/* Hoja de puntaje */
+.scoresheet { display: grid; grid-template-columns: repeat(9, 1fr) 1.4fr; border: 2px solid #30283f; border-radius: 12px; overflow: hidden; margin: 10px 0 18px; }
+.score-frame { border-right: 1px solid #30283f; min-width: 0; }
+.score-frame:last-child { border-right: none; }
+.score-frame.current { background: #fff0f7; }
+.score-frame-number { text-align: center; font-size: 12px; font-weight: 700; color: #8a7f96; padding: 4px 0; border-bottom: 1px solid #f0ddec; }
+.score-rolls { display: flex; justify-content: flex-end; }
+.score-roll { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-left: 1px solid #e4d7e2; border-bottom: 1px solid #e4d7e2; font-weight: 700; font-size: 14px; }
+.score-roll.mark { color: #df5aaa; }
+.score-total { height: 34px; display: flex; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: #30283f; }
+.keypad-label { font-weight: 600; color: #4a4258; }
+.keypad { display: grid; grid-template-columns: repeat(11, 1fr); gap: 8px; }
+.pin-button { height: 52px; border-radius: 14px; border: 1px solid #f0ddec; background: #fff0f7; color: #d052a2; font-size: 18px; font-weight: 800; }
+.pin-button.strike { background: linear-gradient(135deg, #e55bab, #a86ce0); color: white; border: none; }
+.pin-button:disabled { opacity: 0.3; cursor: not-allowed; }
+.save-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.save-row .text-input { flex: 1; min-width: 200px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.line-chart { width: 100%; height: auto; }
+.chart-grid { stroke: #f0ddec; }
+.chart-tick { fill: #8a7f96; font-size: 12px; }
+.chart-line { fill: none; stroke: #df5aaa; stroke-width: 3; }
+.chart-dot { fill: white; stroke: #a86ce0; stroke-width: 3; }
+
+.history-list { display: grid; gap: 10px; }
+.history-item { border: 1px solid #f0ddec; border-radius: 18px; overflow: hidden; }
+.history-summary { width: 100%; display: grid; grid-template-columns: 80px 1fr auto; gap: 16px; align-items: center; text-align: left; padding: 14px 18px; border: none; background: white; }
+.history-summary small { display: block; color: #8a7f96; }
+.history-score { font-family: 'Outfit', sans-serif; font-size: 30px; font-weight: 800; color: #df5aaa; }
+.history-detail { padding: 0 18px 18px; }
+
+/* Lecciones */
+.level-block { display: grid; gap: 14px; }
+.level-head { display: flex; align-items: center; gap: 10px; }
+.level-head h2 { font-family: 'Outfit', sans-serif; margin: 0; }
+.lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.lesson-card { text-align: left; background: white; border: 1px solid #f0ddec; border-radius: 22px; padding: 24px; box-shadow: 0 12px 30px rgba(74, 45, 75, 0.06); transition: 0.2s ease; }
+.lesson-card:hover:not(:disabled) { transform: translateY(-3px); }
+.lesson-card h3 { font-family: 'Outfit', sans-serif; margin: 10px 0 6px; color: #30283f; }
+.lesson-card p { color: #6b6278; margin: 0; }
+.lesson-card.locked { opacity: 0.55; cursor: not-allowed; }
+.lesson-card.passed { border-color: #b7e4c7; }
+.lesson-status { font-size: 13px; font-weight: 700; color: #d052a2; }
+.steps { line-height: 1.8; color: #4a4258; padding-left: 22px; }
+.video-link { display: inline-block; text-decoration: none; margin-top: 10px; }
+.quiz-question { border: 1px solid #f0ddec; border-radius: 16px; padding: 14px 18px; margin: 0 0 14px; }
+.quiz-question legend { font-weight: 700; padding: 0 6px; color: #30283f; }
+.quiz-option { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; cursor: pointer; }
+.quiz-option.right { background: #e8f7ee; }
+.quiz-option.wrong { background: #fde8e8; }
+.quiz-result { margin-top: 16px; padding: 18px; border-radius: 16px; background: #fff0f7; }
+.quiz-result.ok { background: #e8f7ee; }
+
+/* Retos */
+.challenge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.challenge-card { background: white; border: 1px solid #f0ddec; border-radius: 22px; padding: 22px; opacity: 0.85; }
+.challenge-card.done { opacity: 1; border-color: #df5aaa; box-shadow: 0 12px 30px rgba(202, 89, 169, 0.15); }
+.challenge-card h3 { font-family: 'Outfit', sans-serif; margin: 8px 0 4px; }
+.challenge-card p { color: #6b6278; margin: 0 0 12px; }
+.challenge-icon { font-size: 30px; }
+.bar { height: 8px; border-radius: 999px; background: #f6e6f1; overflow: hidden; margin-bottom: 6px; }
+.bar div { height: 100%; background: linear-gradient(135deg, #e55bab, #a86ce0); }
+.badge-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.badge { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: #fff0f7; font-weight: 700; color: #a45791; }
+.badge span { font-size: 20px; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #f6e6f1; }
+.table th { color: #8a7f96; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+.table tr.me { background: #fff0f7; }
+
+/* Glosario */
+.two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.glossary dt { font-weight: 800; color: #d052a2; margin-top: 14px; }
+.glossary dd { margin: 4px 0 0; color: #4a4258; }
+
+/* Mensajes */
+.thread-form { display: grid; gap: 4px; margin-bottom: 18px; }
+.messages { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.message { border: 1px solid #f0ddec; border-radius: 16px; padding: 14px 18px; }
+.message.from-coach { background: #fbf5ff; border-color: #e3d4f6; }
+.message-head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.message-head small { color: #8a7f96; margin-left: auto; }
+.message p { margin: 8px 0 0; }
+
+/* Inicio */
+.notifications { display: grid; gap: 10px; width: 84%; margin: 24px auto 0; }
+.notification { text-align: left; border: 1px solid #f0ddec; background: white; border-radius: 16px; padding: 14px 18px; font-weight: 600; color: #4a4258; }
+.notification.feedback { background: #fbf5ff; }
+.notification.achievement { background: #fff0f7; }
+.home-modules { width: 84%; margin: 0 auto 80px; }
+.profile-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 10px 0 26px; }
+.profile-stats div { background: #fff0f7; border-radius: 16px; padding: 14px; text-align: center; }
+.profile-stats strong { display: block; font-family: 'Outfit', sans-serif; font-size: 22px; color: #df5aaa; text-transform: capitalize; }
+.profile-stats span { font-size: 13px; color: #6b6278; }
+
+@media (max-width: 800px) {
+  .two-cols { grid-template-columns: 1fr; }
+  .keypad { grid-template-columns: repeat(6, 1fr); }
+  .scoresheet { grid-template-columns: repeat(5, 1fr); }
+  .score-frame:nth-child(5) { border-right: none; }
+  .score-frame:nth-child(-n+5) { border-bottom: 1px solid #30283f; }
+  .profile-stats { grid-template-columns: repeat(2, 1fr); }
+  .table { font-size: 13px; }
+  .card { padding: 20px; overflow-x: auto; }
+}
+
+.home-stack { display: block; }
+.home-stack .hero { padding: 50px 0 60px; }
+.home-modules { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+/* iPhone: app instalada a pantalla completa (respeta la muesca y la barra inferior) */
+.navbar { padding-top: max(14px, env(safe-area-inset-top)); }
+body { padding-bottom: env(safe-area-inset-bottom); -webkit-tap-highlight-color: transparent; }
+@media (max-width: 800px) {
+  /* 16px evita que Safari haga zoom al tocar un campo de texto */
+  input, select, textarea, .text-input, .login-card input { font-size: 16px; }
+  .pin-button { height: 56px; }
+}

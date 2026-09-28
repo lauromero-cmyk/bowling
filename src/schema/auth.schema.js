@@ -17,7 +17,12 @@ export const registerSchema = [
         .notEmpty()
         .withMessage("La contraseña es obligatoria")
         .isLength({ min: 6 })
-        .withMessage("La contraseña debe tener mínimo 6 caracteres")
+        .withMessage("La contraseña debe tener mínimo 6 caracteres"),
+
+    body("role")
+        .optional()
+        .isIn(["jugador", "entrenador"])
+        .withMessage("El rol debe ser jugador o entrenador")
 ];
 
 
